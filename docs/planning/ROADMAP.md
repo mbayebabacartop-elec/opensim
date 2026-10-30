@@ -12,9 +12,9 @@ AGENTS, architecture, ADR frontières/moteurs/format, matrice de dépendances/li
 
 C++20/CMake, MSVC 2022, Qt Quick/QML, Core indépendant, journalisation, preset Windows, test initial, fenêtre lancée et commit Git. Le choix Qt 6.10.3 est temporaire : sélectionner une version maintenue avant distribution. Détails : [STEP-2-STATUS.md](STEP-2-STATUS.md).
 
-## Étape 3 — Core et format de projet (prochaine étape)
+## Étape 3 — Core et format de projet (premier incrément réalisé)
 
-Définir unités SI, quantités, identifiants/version de composants, ports/signaux, connexions, validation, horloge, événements et diagnostics. Sélectionner JSON et conteneur .olsim après comparaison licences/sécurité. Concevoir migrations, sauvegarde atomique, dépendances manquantes et tests de round-trip/archives malformées.
+Ajout des dimensions/quantités SI, définitions et instances de composants, ports typés, connexions validées, horloge à pas fixe/variable et file d'événements déterministe. Le conteneur `.olsim` v1 stocke manifeste + modèle JSON dans une archive ZIP, avec limites de taille, chargement en mémoire et remplacement atomique. Le test couvre dimensions, paramètres, connexion, ordre d'événements et round-trip. Restent les cas d'archives hostiles, les migrations, les résultats de simulation et les actifs. Voir ADR 0005 ; la validation scientifique ne commence qu'avec l'étape 4.
 
 ## Étape 4 — moteur électrique et modèle CC
 

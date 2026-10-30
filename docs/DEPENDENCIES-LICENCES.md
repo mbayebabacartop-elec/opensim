@@ -50,6 +50,10 @@
 | MSVC Build Tools | 17.14.42 / compilateur 19.44.35229 | installé avec SDK 10.0.26100 ; conditions Microsoft et redistribuable à documenter pour les releases |
 | Qt Quick/QML | 6.10.3 MSVC x64 | utilisé par le shell ; Qt open-source LGPLv3/GPLv3 selon modules et obligations de redistribution à respecter |
 | Qt Quick 3D / Qt Graphs | non installés | non lié au binaire ; installation interrompue faute d’espace disque |
+| nlohmann/json | 3.12.0, en-tête monolithique | MIT ; intégré dans `third_party/nlohmann_json/json.hpp`, SHA-256 `aaf127c04cb31c406e5b04a63f1ae89369fccde6d8fa7cdda1ed4f32dfc5de63` |
+| miniz | 3.1.2, commit `77d0dce8627735138c51770d1799a1ef48f2117d` | licence permissive avec notices upstream ; sous-ensemble de fichiers vendorié sous `third_party/miniz/` et compilé statiquement |
+
+Ces deux bibliothèques sont utilisées pour la persistance Core `.olsim` hors ligne. Notices fournies dans `THIRD_PARTY_NOTICES/` et licence amont complète de miniz sous `third_party/miniz/LICENSE`. Sources amont : [nlohmann/json](https://github.com/nlohmann/json/releases/tag/v3.12.0), [miniz](https://github.com/richgel999/miniz/releases/tag/3.1.2).
 
 Qt 6.10.3 est une version provisoire de développement ; sa période de support standard est échue. aqtinstall 3.3.0 n’a pas réussi à récupérer les métadonnées de versions 6.11 ou 6.12 du dépôt configuré. Revalider les versions maintenues et sélectionner l’installateur officiel approprié avant toute distribution.
 

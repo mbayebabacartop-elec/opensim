@@ -1,5 +1,5 @@
 ﻿cmake_minimum_required(VERSION 3.25)
-project(OpenLabSimulator VERSION 0.1.0 LANGUAGES CXX)
+project(OpenLabSimulator VERSION 0.1.0 LANGUAGES C CXX)
 
 include(CTest)
 
@@ -11,19 +11,45 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt6 6.10 REQUIRED COMPONENTS Core Gui Qml Quick QuickControls2)
 qt_standard_project_setup(REQUIRES 6.10)
 
+include(GenerateExportHeader)
+add_library(openlab_miniz STATIC
+    third_party/miniz/miniz.c
+    third_party/miniz/miniz_zip.c
+    third_party/miniz/miniz_tinfl.c
+    third_party/miniz/miniz_tdef.c
+)
+generate_export_header(openlab_miniz
+    EXPORT_FILE_NAME "${CMAKE_CURRENT_BINARY_DIR}/generated/miniz_export.h"
+    EXPORT_MACRO_NAME MINIZ_EXPORT
+    STATIC_DEFINE MINIZ_STATIC_DEFINE
+)
+target_compile_definitions(openlab_miniz PUBLIC MINIZ_STATIC_DEFINE PRIVATE MINIZ_NO_STDIO)
+target_include_directories(openlab_miniz PUBLIC third_party/miniz "${CMAKE_CURRENT_BINARY_DIR}/generated")
+
+add_library(nlohmann_json INTERFACE)
+target_include_directories(nlohmann_json INTERFACE third_party/nlohmann_json)
+
 add_library(openlab_core STATIC
     core/src/version.cpp
+    core/src/units.cpp
+    core/src/components.cpp
+    core/src/project_model.cpp
+    core/src/simulation_time.cpp
+    core/src/project_store.cpp
 )
 target_include_directories(openlab_core
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/core/include>
 )
 target_compile_features(openlab_core PUBLIC cxx_std_20)
+target_link_libraries(openlab_core PRIVATE nlohmann_json openlab_miniz)
 
 if(MSVC)
     target_compile_options(openlab_core PRIVATE /W4 /permissive- /EHsc)
+    target_compile_options(openlab_miniz PRIVATE /W3)
 else()
     target_compile_options(openlab_core PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(openlab_miniz PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
 qt_add_executable(openlab_app WIN32
