@@ -1,19 +1,21 @@
-﻿# ADR-0004 — shell natif Qt Widgets et interface QML différée
+﻿# ADR-0004 — premier shell Qt Quick/QML
 
-- **Statut :** accepté pour le premier incrément, révision requise avant UI avancée
+- **Statut :** implémenté pour le premier incrément ; le choix de version Qt reste provisoire
 - **Date :** 2026-10-30
 
 ## Contexte
 
-L’architecture vise Qt 6/QML. Le poste dispose de moins de 100 Mio libres après l’installation MSVC, SDK et QtBase. Le paquet Qt Quick/QML n’a pas pu terminer son installation. La compilation de Qt Widgets fonctionne.
+L’architecture initiale visait Qt 6/QML. Le premier build, fait avant l’installation de Qt Declarative, utilisait Widgets. Après désinstallation de KiCad à la demande de l’utilisateur et récupération d’espace disque, Qt Quick/QML a pu être installé.
 
-## Décision
+## Décision actuelle
 
-Le shell de démarrage utilise Qt Widgets pour prouver le cycle application, fenêtre, journalisation et build natif. Il ne simule rien et ne présente aucun composant comme disponible. L’architecture Core/services reste indépendante de la UI. Le choix entre Widgets, QML ou une combinaison sera revu après récupération d’espace et installation complète/licence validée de Qt.
+Le shell natif utilise Qt Quick/QML avec ressource QML intégrée au binaire. Le Core reste indépendant de Qt. La bibliothèque et les états affichés signalent explicitement l’absence de moteur physique.
+
+La version locale est Qt 6.10.3. Elle est uniquement un outil de développement pour ce squelette ; le projet doit passer à une version maintenue et revérifier licences/modules avant distribution.
 
 ## Conséquences
 
-- Le shell actuel ne valide pas l’architecture QML visée pour les panneaux et visualisations avancées.
-- Pas d’API QML, Qt Quick, Qt Graphs ou Qt Quick 3D dans le build actuel.
-- Une migration UI sera nécessaire si le choix final reste QML ; elle ne doit pas entraîner de dépendance Qt dans le Core.
-- La cible Qt 6.10.3 reste temporaire et doit être mise à jour vers une version maintenue avant distribution.
+- Le shell QML est compilé par `qt_add_qml_module` et lancé par `QQmlApplicationEngine`.
+- Pas de Qt Quick 3D, Qt Graphs ni simulation dans ce build.
+- `run-local.bat` configure le chemin des DLL/plugins mais ne produit pas de package autonome.
+- Toute dépendance Qt demeure hors du Core.

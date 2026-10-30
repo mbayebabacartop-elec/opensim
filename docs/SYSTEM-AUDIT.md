@@ -51,11 +51,18 @@ Le nouveau projet documentaire est créé dans `C:\Users\User\Desktop\OpenLabSim
 
 Audit par PowerShell, `Get-ComputerInfo`, CIM, recherche des exécutables et répertoires standards, puis inventaire `winget list`. Il est en lecture seule. Les versions de dépendances mentionnées dans les documents sont des observations ou des pages officielles consultées le 2026-10-30 ; elles devront être revérifiées avant intégration. Aucune compilation, installation, simulation ou test logiciel n’a été exécuté.
 
-## Mise à jour après validation de l’étape 2 — 2026-10-30
+## Installation initiale des outils — 2026-10-30 (avant récupération d’espace)
 
 - Git for Windows 2.56.0.3 installé.
 - CMake 4.4.4 installé depuis l’archive officielle dans `%LOCALAPPDATA%\Programs\CMake` ; le cache winget a présenté un verrou, l’archive avec hachage vérifié a été extraite manuellement.
 - Visual Studio Build Tools 2022 17.14.42 installé avec MSVC 19.44.35229 et SDK Windows 10.0.26100. L’installateur recommande un redémarrage, non effectué.
-- Qt Widgets 6.10.3 MSVC x64 installé via aqtinstall 3.3.0. L’installation Qt Quick/QML s’est arrêtée faute d’espace ; Qt Widgets suffit au shell natif du premier incrément.
-- Le cache des paquets VS a été désactivé via l’installateur pour récupérer de l’espace. Le volume C: est ensuite descendu à environ 85 Mio libres ; ne pas installer d’autre dépendance avant d’avoir libéré de l’espace de manière sûre.
+- Qt Widgets 6.10.3 MSVC x64 installé en premier. Le paquet Qt Quick/QML s’est initialement arrêté faute d’espace ; l’utilisateur a ensuite demandé la désinstallation de KiCad, ce qui a permis de terminer Qt Declarative.
+- Le cache VS a été désactivé via l’installateur. Lors de cette première étape, le volume C: est descendu sous 100 Mio libres ; KiCad a ensuite été désinstallé explicitement à la demande de l’utilisateur pour récupérer de l’espace.
 - Build CMake/MSVC Release, test de fumée Core, CTest et lancement du shell ont été vérifiés. Voir [STEP-2-STATUS.md](planning/STEP-2-STATUS.md).
+
+## Désinstallation KiCad et reprise Qt — 2026-10-30
+
+KiCad 10.0 a été désinstallé à la demande de l’utilisateur après avoir constaté qu’il occupait environ 4,46 Gio dans `C:\Program Files\KiCad\10.0`. `winget list` ne le détecte plus ; environ 4,5 Gio ont été récupérés. Les dossiers `Documents\KiCad` et `Documents\kicad_projects` ont été vérifiés et sont toujours présents.
+
+L’espace récupéré a permis de terminer le paquet Qt Declarative/QML 6.10.3. Le shell Qt Quick/QML a été compilé, lancé et observé sans nouvel avertissement QML dans le journal après correction du dialogue À propos. Le build CMake Release et le test de fumée Core ont repassé.
+

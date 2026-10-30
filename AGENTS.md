@@ -33,6 +33,7 @@
 
 ## Environnement Windows du premier incrément
 
-- Le build vérifié utilise CMake 4.4.4, MSVC 19.44, SDK 10.0.26100 et Qt Widgets 6.10.3.
+- Le build vérifié utilise CMake 4.4.4, MSVC 19.44, SDK 10.0.26100 et Qt Quick/QML 6.10.3.
 - Le build est configuré en Release ; les bibliothèques Qt de debug ne sont pas nécessaires à ce preset.
-- L’installation QML de Qt est incomplète et le volume C: a moins de 100 Mio libres. Ne pas lancer d’installation ou build lourd avant d’avoir résolu la capacité disponible.
+- Le module Qt Quick/QML est installé. Qt 6.10.3 est provisoire et la version maintenue doit être revalidée avant distribution. Ne pas lancer de gros builds si l’espace disque est insuffisant.
+

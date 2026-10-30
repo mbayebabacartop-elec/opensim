@@ -1,47 +1,47 @@
-﻿# Étape 2 — état du squelette natif
+﻿# Étape 2 — squelette natif
 
-Date : 2026-10-30. L’étape est partiellement réalisée et le premier incrément Windows est compilé et lancé. La migration vers QML et le packaging redistribuable restent ouverts.
+Date : 2026-10-30. Premier incrément Windows compilé, testé et lancé. Le dépôt Git est initialisé.
 
 ## Livrables
 
 - Application C++20 construite avec CMake et MSVC 2022.
-- Bibliothèque `openlab_core` distincte et sans dépendance Qt ; elle ne contient pour l’instant que l’identification de version, aucun modèle physique.
-- Fenêtre Qt Widgets native avec menu Quitter fonctionnel, À propos, panneau bibliothèque explicitement vide et état de démarrage honnête.
-- Journalisation Qt vers `%LOCALAPPDATA%\OpenLab\OpenLab Simulator\openlab.log`.
-- Presets Windows x64 Release et test ; CTest et test de fumée du Core.
-- Script `run-local.bat` pour ajouter les DLL Qt à la recherche locale et lancer le build courant.
+- Core statique indépendant de Qt, limité pour l’instant à l’identification de version.
+- Interface Qt Quick/QML intégrée aux ressources de l’application : fenêtre principale, bibliothèque vide explicitement signalée, menus Quitter et À propos, état de simulation inactif.
+- Journalisation Qt dans `%LOCALAPPDATA%\OpenLab\OpenLab Simulator\openlab.log`.
+- Presets Windows x64 Release ; test de fumée Core sous CTest.
+- Lanceur local `run-local.bat` configurant la recherche des DLL et plugins Qt.
 
-## Dépendances installées pendant l’étape
+## Dépendances installées
 
 | Outil | Version / état |
 |---|---|
 | Git for Windows | 2.56.0.3 |
-| CMake | 4.4.4, archive officielle extraite dans `%LOCALAPPDATA%\Programs\CMake` |
+| CMake | 4.4.4 |
 | Visual Studio Build Tools | 2022 17.14.42 ; MSVC 19.44.35229 ; SDK 10.0.26100 |
-| Qt | 6.10.3 MSVC 2022 x64, Qt Widgets utilisable ; installation QML incomplète |
-| Qt Test / GoogleTest | non installés ; test initial fait sans framework tiers |
+| Qt | 6.10.3 MSVC 2022 x64 ; Qt Quick/QML et Quick Controls installés |
+| GoogleTest / Qt Test | non installés ; test initial minimal sans framework tiers |
 
-L’installateur Visual Studio a demandé un redémarrage pour finaliser, mais aucun redémarrage n’a été fait. Le cache des paquets VS a été désactivé pour récupérer de l’espace. Le système de fichiers C: est descendu à environ 85 Mio libres.
+Qt 6.10.3 est provisoire et sa période de support standard est échue. Les essais aqtinstall 3.3.0 pour Qt 6.11/6.12 n’ont pas permis de récupérer les index nécessaires. Ne pas distribuer ce build avant d’avoir sélectionné et validé une version Qt maintenue et sa conformité de licence. Qt Quick 3D et Qt Graphs ne sont pas utilisés.
+
+KiCad 10.0 a été désinstallé à la demande de l’utilisateur afin de récupérer de l’espace. Les projets dans Documents ont été préservés ; le volume C: dispose maintenant d’environ 4 Gio libres après l’installation QML et le build.
 
 ## Vérifications effectuées
 
-- CMake configure : réussi, SDK 10.0.26100 sélectionné, MSVC 19.44.35229 détecté.
-- Build Visual Studio Release : réussi pour `openlab_core`, `openlab_core_smoke` et `openlab_app`.
+- Configuration CMake : réussie avec le SDK 10.0.26100 et MSVC 19.44.35229.
+- Build Release : réussi pour `openlab_core`, `openlab_core_smoke` et `openlab_app`.
 - CTest : `openlab.core.smoke` — 1/1 réussi.
-- Lancement de `openlab_app.exe` : processus resté actif ; journal créé et alimenté.
-- Aucun test physique ou de simulation exécuté.
+- Lancement par `run-local.bat` : fenêtre détectée et processus actif ; journal créé.
+- QML : ressource compilée et chargée ; aucun avertissement QML nouveau après correction de la boîte À propos.
+- Liens Markdown internes : vérifiés.
 
-## Limites et problèmes
+## Limites
 
-1. Le paquet Qt 6.10.3 QML a échoué par manque d’espace pendant l’installation. Les répertoires QML incomplets ne sont pas utilisés par l’application courante.
-2. La version 6.10.3 est provisoire ; la cible de licence et de maintenance Qt doit être revalidée avant toute distribution.
-3. La vue centrale n’édite encore aucun système et la bibliothèque ne contient aucun composant. Ce n’est pas un simulateur fonctionnel à ce stade.
-4. L’application n’est pas encore empaquetée avec ses DLL et plugins Qt ; `run-local.bat` n’est qu’un lanceur de développement.
-5. La configuration actuelle est Release seulement ; les import libraries Qt de debug ne sont pas une cible de ce build.
-6. Git est installé ; l’initialisation et le commit seront faits après documentation finale de l’étape.
+1. Aucun composant ni moteur physique n’est implémenté.
+2. Le Core n’a ni graphe de projet, ni unités/ports, ni sauvegarde/chargement ; cela constitue l’étape suivante.
+3. La fenêtre est un shell utilisable, pas encore un éditeur de systèmes.
+4. Le binaire n’est pas empaqueté pour distribution ; `run-local.bat` requiert Qt présent localement.
+5. Qt 6.10.3 ne doit pas être considéré comme une base maintenue pour une release.
 
-## Suite nécessaire
+## Prochaine étape
 
-Récupérer de l’espace disque sans toucher aux données personnelles, reprendre l’installation QML, revoir les ADR de l’interface, et établir un lancement autonome avec `windeployqt` avant de clore l’étape 2. Le moteur CC reste réservé à une étape ultérieure.
-
-
+Étape 3 : contrat de composants/ports et quantités SI, graphe de projet, horloge/événements et stratégie de persistance `.olsim`, avec migrations et tests de round-trip avant le premier moteur physique.

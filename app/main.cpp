@@ -3,12 +3,12 @@
 
 #include "openlab/core/version.hpp"
 
-#include <QApplication>
-#include <QMessageBox>
+#include <QGuiApplication>
+#include <QQmlApplicationEngine>
 #include <QLoggingCategory>
 
 int main(int argc, char* argv[]) {
-    QApplication application(argc, argv);
+    QGuiApplication application(argc, argv);
     QCoreApplication::setOrganizationName(QStringLiteral("OpenLab"));
     QCoreApplication::setApplicationName(QStringLiteral("OpenLab Simulator"));
     QCoreApplication::setApplicationVersion(
@@ -16,13 +16,18 @@ int main(int argc, char* argv[]) {
 
     QString loggingError;
     if (!openlab::app::initializeLogging(&loggingError)) {
-        QMessageBox::critical(nullptr, QStringLiteral("Erreur de journalisation"), loggingError);
+        qCritical().noquote() << loggingError;
         return 1;
     }
 
     qInfo() << "Démarrage d’OpenLab Simulator" << QCoreApplication::applicationVersion();
-    openlab::app::MainWindow window;
-    window.show();
+    QQmlApplicationEngine engine;
+    QString loadError;
+    if (!openlab::app::loadMainWindow(engine, &loadError)) {
+        qCritical().noquote() << loadError;
+        return 2;
+    }
+
     const int result = application.exec();
     qInfo() << "Arrêt d’OpenLab Simulator" << result;
     return result;

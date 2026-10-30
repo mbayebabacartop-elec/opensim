@@ -1,38 +1,32 @@
 ﻿# Plan de développement détaillé
 
-Les étapes sont livrées comme incréments compilables et vérifiables. L’étape 2 est en cours ; aucun moteur scientifique n’est commencé.
-
 ## Étape 0 — audit (terminée)
 
-Windows x64, i5-6300U, 16 Gio, Intel HD 520. Initialement Git/CMake/MSVC/Qt absents. Le prototype CircuitLab3D reste séparé.
+Windows x64, i5-6300U, 16 Gio, Intel HD 520. Prototype CircuitLab3D séparé. Outils natifs installés lors de l’étape 2.
 
-## Étape 1 — architecture (terminée, documents initiaux)
+## Étape 1 — architecture (terminée)
 
-AGENTS, architecture, ADR frontières/moteurs/format, dépendances/licences, plan et validation scientifique créés.
+AGENTS, architecture, ADR frontières/moteurs/format, matrice de dépendances/licences, plan et validation scientifique.
 
-## Étape 2 — squelette natif (premier incrément vérifié, QML restant à faire)
+## Étape 2 — squelette natif (terminée pour le premier incrément)
 
-Réalisé : Git, CMake, MSVC/SDK ; Core C++ indépendant de Qt ; application Qt Widgets ; journalisation ; presets ; test initial du Core ; build Release et lancement Windows.
+C++20/CMake, MSVC 2022, Qt Quick/QML, Core indépendant, journalisation, preset Windows, test initial, fenêtre lancée et commit Git. Le choix Qt 6.10.3 est temporaire : sélectionner une version maintenue avant distribution. Détails : [STEP-2-STATUS.md](STEP-2-STATUS.md).
 
-À compléter : récupérer assez d’espace disque, installer la totalité du module Qt Quick/QML dans une version prise en charge, puis décider si le shell doit intégrer QML ou conserver Widgets. Le lecteur C: n’avait qu’environ 85 Mio libres après l’installation. Éviter d’ajouter des dépendances ou de lancer de gros builds avant d’avoir résolu cette contrainte.
+## Étape 3 — Core et format de projet (prochaine étape)
 
-Aucun solveur du moteur CC n’est inclus dans cette étape.
-
-## Étape 3 — Core et format de projet
-
-Types de composants/ports, connexions, quantités SI, événements, résultats, JSON Schema, format `.olsim` sûr, migrations, sauvegarde/restauration et tests de round-trip.
+Définir unités SI, quantités, identifiants/version de composants, ports/signaux, connexions, validation, horloge, événements et diagnostics. Sélectionner JSON et conteneur .olsim après comparaison licences/sécurité. Concevoir migrations, sauvegarde atomique, dépendances manquantes et tests de round-trip/archives malformées.
 
 ## Étape 4 — moteur électrique et modèle CC
 
-Écrire et réviser la fiche scientifique avant le code ; tester d’abord un cas RL analytique puis le modèle électromécanique couplé. Étudier stabilité, pas de temps et convergence.
+Écrire et réviser la fiche scientifique avant le code ; tester un circuit RL analytique puis le modèle électromécanique couplé. Étudier stabilité, pas de temps et convergence.
 
 ## Étape 5 — laboratoire moteur
 
-Banc d’essai, paramètres, acquisition des résultats réels, multimètre/oscilloscope/tachymètre et export documenté.
+Banc d’essai, paramètres, acquisition réelle des résultats, multimètre/oscilloscope/tachymètre et export documenté.
 
 ## Étape 6 — visualisation synchronisée
 
-Choix de backend selon licence, scène adaptée au matériel modeste, rendu lié à l’état du moteur et benchmark.
+Choisir le backend selon licences, construire une scène adaptée au matériel modeste, lier le rendu aux états numériques et réaliser un benchmark.
 
 ## Étape 7 — plugins et bibliothèque
 
@@ -40,12 +34,12 @@ Composants déclaratifs validés, manifestes versionnés, provenance, permission
 
 ## Étape 8 — extension scientifique
 
-Nouveaux domaines par modèles documentés et cas validés. FMI après étude d’interopérabilité.
+Ajouter des domaines avec modèles documentés et cas validés. Étudier FMI pour l’interopérabilité.
 
 ## Étape 9 — apprentissage et cloud optionnel
 
-Cours/TP, évaluations, rapports et collaboration facultative ; fonctionnement hors ligne maintenu.
+Cours/TP, évaluations, rapports et collaboration facultative ; le fonctionnement hors ligne reste complet.
 
 ## Critère de sortie de chaque étape
 
-Fonctionnalité vérifiable, build reproductible, tests réellement exécutés, documentation à jour, licences répertoriées, limites connues et démonstration minimale.
+Fonctionnalité vérifiable, build reproductible, tests réellement exécutés, documentation et licences à jour, limites connues et démonstration minimale.

@@ -2,24 +2,25 @@
 
 OpenLab Simulator vise un laboratoire numérique scientifique : construction de systèmes, moteurs de simulation spécialisés, instruments, vues 2D/3D et expériences pédagogiques.
 
-## État
+## État du projet
 
-- Étapes 0 et 1 : audit, architecture et ADR documentés.
-- Étape 2 : premier squelette natif créé, compilé et lancé avec MSVC 2022 et Qt Widgets 6.10.3 ; test Core de fumée réussi.
-- Limite importante : Qt Quick/QML n’a pas pu finir de s’installer faute d’espace disque. Le shell de ce premier incrément utilise Qt Widgets. La migration vers l’interface QML reste à faire après rétablissement de l’espace et réévaluation de la version Qt.
-- Aucun moteur de simulation n’est implémenté. Les équations du moteur CC ne sont pas exécutées.
+- Étapes 0–1 : audit, architecture, ADR, licences et validation scientifique documentés.
+- Étape 2 : squelette C++20/CMake compilé et lancé sur Windows avec MSVC 2022 et Qt Quick/QML.
+- Test initial du Core : réussi.
+- Aucun moteur de simulation ni composant physique n’est encore inclus. L’interface annonce explicitement cet état.
+- Qt 6.10.3 est la version installée pour le prototype local ; elle doit être remplacée par une version maintenue avant distribution.
 
-Voir [le rapport de l’étape 2](docs/planning/STEP-2-STATUS.md), [l’audit système](docs/SYSTEM-AUDIT.md) et [le plan](docs/planning/ROADMAP.md).
+Voir [le rapport de l’étape 2](docs/planning/STEP-2-STATUS.md), [l’audit système](docs/SYSTEM-AUDIT.md), [l’architecture](docs/architecture/ARCHITECTURE.md) et [le plan](docs/planning/ROADMAP.md).
 
 ## Architecture
 
-Une interface pilote un Core indépendant, qui orchestre des moteurs spécialisés derrière des contrats versionnés. Les instruments et vues consomment des résultats calculés et typés en unités SI. Le Core n’intègre pas Qt ni un moteur physique particulier.
+Qt Quick/QML fournit l’interface ; le Core C++ reste indépendant de Qt et des solveurs. Les moteurs spécialisés seront intégrés derrière des contrats versionnés. Les instruments et vues devront consommer des résultats calculés, typés et exprimés en unités SI.
 
-Les décisions sont consignées dans [ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md), les [ADR](docs/architecture) et [DEPENDENCIES-LICENCES.md](docs/DEPENDENCIES-LICENCES.md).
+Les décisions sont consignées dans les [ADR](docs/architecture) et la matrice [dépendances/licences](docs/DEPENDENCIES-LICENCES.md).
 
 ## Build Windows
 
-Après installation de la chaîne native, depuis le dossier du projet :
+Depuis le dossier du projet :
 
 ```powershell
 cmake --preset windows-msvc-release
@@ -28,9 +29,8 @@ ctest --preset windows-msvc-release
 .\run-local.bat
 ```
 
-Le preset attend CMake 3.25+ et Qt 6 MSVC x64. Il pointe pour l’instant vers `C:/Qt/6.10.3/msvc2022_64`. Les scripts ne déploient pas encore une version redistribuable de l’application.
+Le preset cible MSVC x64 et Qt dans `C:/Qt/6.10.3/msvc2022_64`. `run-local.bat` est un lanceur de développement, pas un installateur redistribuable.
 
 ## Règles scientifiques
 
-Les modèles doivent documenter équations, unités SI, conventions, hypothèses, plage de validité, provenance des paramètres et limites. Aucun résultat de simulation ne doit être fabriqué ou annoncé sans calcul et validation reproductibles. Voir [VALIDATION.md](docs/planning/VALIDATION.md).
-
+Chaque modèle devra documenter équations, unités SI, conventions, hypothèses, plage de validité, provenance des paramètres et limites. Aucun résultat ne sera présenté comme simulé sans calcul et validation reproductibles. Voir [VALIDATION.md](docs/planning/VALIDATION.md).

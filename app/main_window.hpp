@@ -1,23 +1,11 @@
 ﻿#pragma once
 
-#include <QMainWindow>
+#include <QString>
 
-class QWidget;
+class QQmlApplicationEngine;
 
 namespace openlab::app {
 
-class MainWindow final : public QMainWindow {
-    Q_OBJECT
-
-public:
-    explicit MainWindow(QWidget* parent = nullptr);
-
-private slots:
-    void showAboutDialog();
-
-private:
-    QWidget* createWorkspace();
-};
+[[nodiscard]] bool loadMainWindow(QQmlApplicationEngine& engine, QString* errorMessage = nullptr);
 
 } // namespace openlab::app
-
