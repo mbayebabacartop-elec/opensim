@@ -1,6 +1,6 @@
 ﻿# Stratégie de validation scientifique
 
-Aucune simulation physique n’est implémentée dans l’étape 1. Ce document fixe les critères nécessaires avant de présenter un résultat comme scientifiquement fiable.
+Le modèle série RL idéal est maintenant le premier incrément physique exécuté par le moteur électrique. Aucun résultat ne doit être généralisé à un composant réel. Ce document fixe les critères nécessaires avant de présenter un résultat comme scientifiquement fiable.
 
 ## Fiche modèle exigée
 
@@ -19,6 +19,12 @@ Chaque modèle possède : identifiant/version, auteur/source, équations, variab
 ## Instrumentation
 
 Les instruments lisent les échantillons horodatés du moteur et conservent l’unité, le canal, le taux d’échantillonnage, la configuration et l’horloge. Les valeurs affichées doivent pouvoir être reliées au résultat source ; aucune valeur simulée décorative ou remplacée par zéro en cas d’erreur.
+
+## Modèle RL série — première validation effectuée
+
+La fiche complète est `docs/models/electrical/series-rl-step.md`. Le test automatique compare le cas `R=10 Ω`, `L=0,1 H`, `U=5 V`, `i(0)=0 A`, `t=0,05 s` à la solution `0,5(1−e⁻⁵) A`. Les pas de 1 ms et 0,5 ms donnent respectivement les erreurs absolues observées de 0,0008903022 A et 0,0004332715 A (ratio 2,05484). La loi des mailles discrète est vérifiée à 10⁻¹⁰ V. C'est une validation automatisée face à la solution analytique, pas une validation expérimentale ni un résultat ngspice.
+
+Le modèle ignore capacités parasites, saturation, pertes et dépendances thermiques. L'intégrateur Euler implicite est d'ordre un ; réduire le pas augmente le coût et ne supprime pas les erreurs de modélisation. La durée, le pas et la taille d'échantillonnage sont contrôlés.
 
 ## Modèle CC, à valider ultérieurement
 

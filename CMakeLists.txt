@@ -44,11 +44,20 @@ target_include_directories(openlab_core
 target_compile_features(openlab_core PUBLIC cxx_std_20)
 target_link_libraries(openlab_core PRIVATE nlohmann_json openlab_miniz)
 
+add_library(openlab_electrical_engine STATIC
+    engines/electrical/src/rl_engine.cpp
+)
+target_include_directories(openlab_electrical_engine PUBLIC engines/electrical/include)
+target_link_libraries(openlab_electrical_engine PUBLIC openlab_core)
+target_compile_features(openlab_electrical_engine PUBLIC cxx_std_20)
+
 if(MSVC)
     target_compile_options(openlab_core PRIVATE /W4 /permissive- /EHsc)
+    target_compile_options(openlab_electrical_engine PRIVATE /W4 /permissive- /EHsc)
     target_compile_options(openlab_miniz PRIVATE /W3)
 else()
     target_compile_options(openlab_core PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(openlab_electrical_engine PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(openlab_miniz PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
@@ -85,4 +94,7 @@ if(BUILD_TESTING)
     add_executable(openlab_core_smoke tests/core_smoke.cpp)
     target_link_libraries(openlab_core_smoke PRIVATE openlab_core)
     add_test(NAME openlab.core.smoke COMMAND openlab_core_smoke)
+    add_executable(openlab_electrical_smoke tests/electrical_smoke.cpp)
+    target_link_libraries(openlab_electrical_smoke PRIVATE openlab_electrical_engine)
+    add_test(NAME openlab.electrical.rl COMMAND openlab_electrical_smoke)
 endif()

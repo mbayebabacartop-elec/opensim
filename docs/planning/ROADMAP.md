@@ -16,9 +16,9 @@ C++20/CMake, MSVC 2022, Qt Quick/QML, Core indépendant, journalisation, preset 
 
 Ajout des dimensions/quantités SI, définitions et instances de composants, ports typés, connexions validées, horloge à pas fixe/variable et file d'événements déterministe. Le conteneur `.olsim` v1 stocke manifeste + modèle JSON dans une archive ZIP, avec limites de taille, chargement en mémoire et remplacement atomique. Le test couvre dimensions, paramètres, connexion, ordre d'événements et round-trip. Restent les cas d'archives hostiles, les migrations, les résultats de simulation et les actifs. Voir ADR 0005 ; la validation scientifique ne commence qu'avec l'étape 4.
 
-## Étape 4 — moteur électrique et modèle CC
+## Étape 4 — moteur électrique et modèle CC (incrément RL réalisé)
 
-Écrire et réviser la fiche scientifique avant le code ; tester un circuit RL analytique puis le modèle électromécanique couplé. Étudier stabilité, pas de temps et convergence.
+Premier modèle série RL idéal sous échelon, solveur backward Euler, fiche mathématique et tests de référence analytique/convergence/KVL ajoutés. Prochaine évolution de l'étape : réseau électrique topologique général, puis modèle électromécanique CC couplé et comparaison indépendante ngspice.
 
 ## Étape 5 — laboratoire moteur
 
