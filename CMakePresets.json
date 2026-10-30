@@ -1,0 +1,39 @@
+﻿{
+    "version":  6,
+    "cmakeMinimumRequired":  {
+                                 "major":  3,
+                                 "minor":  25,
+                                 "patch":  0
+                             },
+    "configurePresets":  [
+                             {
+                                 "name":  "windows-msvc-release",
+                                 "displayName":  "Windows x64 — MSVC Release",
+                                 "generator":  "Visual Studio 17 2022",
+                                 "architecture":  "x64",
+                                 "binaryDir":  "${sourceDir}/build/windows-msvc-release",
+                                 "cacheVariables":  {
+                                                        "CMAKE_PREFIX_PATH":  "C:/Qt/6.10.3/msvc2022_64",
+                                                        "BUILD_TESTING":  "ON"
+                                                    }
+                             }
+                         ],
+    "buildPresets":  [
+                         {
+                             "name":  "windows-msvc-release",
+                             "configurePreset":  "windows-msvc-release",
+                             "configuration":  "Release",
+                             "jobs":  2
+                         }
+                     ],
+    "testPresets":  [
+                        {
+                            "name":  "windows-msvc-release",
+                            "configurePreset":  "windows-msvc-release",
+                            "configuration":  "Release",
+                            "output":  {
+                                           "outputOnFailure":  true
+                                       }
+                        }
+                    ]
+}

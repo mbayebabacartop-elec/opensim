@@ -1,0 +1,19 @@
+﻿# CMake / IDE
+/build/
+/out/
+CMakeUserPresets.json
+.vs/
+.idea/
+*.user
+*.suo
+
+# Runtime logs and local app state
+*.log
+OpenLabSimulator/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+
+run-local.ps1
+
