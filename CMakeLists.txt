@@ -46,6 +46,8 @@ target_link_libraries(openlab_core PRIVATE nlohmann_json openlab_miniz)
 
 add_library(openlab_electrical_engine STATIC
     engines/electrical/src/rl_engine.cpp
+    engines/electrical/src/dc_motor_engine.cpp
+    engines/electrical/src/linear_circuit_engine.cpp
 )
 target_include_directories(openlab_electrical_engine PUBLIC engines/electrical/include)
 target_link_libraries(openlab_electrical_engine PUBLIC openlab_core)
@@ -99,6 +101,12 @@ if(BUILD_TESTING)
     add_executable(openlab_electrical_smoke tests/electrical_smoke.cpp)
     target_link_libraries(openlab_electrical_smoke PRIVATE openlab_electrical_engine)
     add_test(NAME openlab.electrical.rl COMMAND openlab_electrical_smoke)
+    add_executable(openlab_dc_motor_smoke tests/dc_motor_smoke.cpp)
+    target_link_libraries(openlab_dc_motor_smoke PRIVATE openlab_electrical_engine)
+    add_test(NAME openlab.electrical.dc_motor COMMAND openlab_dc_motor_smoke)
+    add_executable(openlab_mna_smoke tests/mna_smoke.cpp)
+    target_link_libraries(openlab_mna_smoke PRIVATE openlab_electrical_engine)
+    add_test(NAME openlab.electrical.mna COMMAND openlab_mna_smoke)
     add_executable(openlab_app_controller_smoke
         tests/app_controller_smoke.cpp
         app/lab_controller.cpp

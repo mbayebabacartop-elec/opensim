@@ -1,4 +1,4 @@
-﻿#include "logging.hpp"
+#include "logging.hpp"
 #include "lab_controller.hpp"
 #include "main_window.hpp"
 
@@ -10,6 +10,7 @@
 #include <QLoggingCategory>
 
 int main(int argc, char* argv[]) {
+    qputenv("QT_QUICK_CONTROLS_STYLE", "Basic");
     QGuiApplication application(argc, argv);
     QCoreApplication::setOrganizationName(QStringLiteral("OpenLab"));
     QCoreApplication::setApplicationName(QStringLiteral("OpenLab Simulator"));

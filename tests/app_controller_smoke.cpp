@@ -51,6 +51,34 @@ int main(int argc, char* argv[]) {
     while (std::getline(csv, row)) ++rows;
     if (rows != 101) return fail("CSV export did not preserve every raw simulation sample");
 
+    timedOut = false;
+    controller.runMotorSimulation();
+    loop.exec();
+    if (timedOut || controller.running() || controller.motorSampleCount() != 1001 ||
+        controller.motorSamples().size() < 2 || controller.motorCurrentAmps() <= 0.0 ||
+        controller.motorAngularVelocity() <= 0.0 || controller.motorTorqueNewtonMetres() <= 0.0 ||
+        controller.motorElectricalPowerWatts() <= 0.0 || controller.motorMechanicalPowerWatts() <= 0.0 ||
+        controller.motorEfficiencyPercent() <= 0.0 || controller.motorBackEmfVolts() <= 0.0)
+        return fail("Controller did not publish the coupled DC motor simulation");
+
+    controller.setMotorPowered(false);
+    controller.setMotorLoadTorque(0.0);
+    timedOut = false;
+    controller.runMotorSimulation();
+    loop.exec();
+    if (timedOut || controller.running() || controller.motorSampleCount() != 1001 ||
+        std::abs(controller.motorCurrentAmps()) > 1e-9 || std::abs(controller.motorAngularVelocity()) > 1e-9)
+        return fail("Controller did not handle unpowered DC motor state correctly");
+    controller.setMotorPowered(true);
+    controller.setMotorLoadTorque(0.03);
+
+    timedOut = false;
+    controller.runMnaSimulation();
+    loop.exec();
+    if (timedOut || controller.running() || controller.mnaSamples().size() != 101 ||
+        controller.mnaSampleCount() != 101 || controller.mnaFinalVoltage() < 4.99 || controller.mnaFinalVoltage() > 5.01)
+        return fail("Controller did not publish the computed MNA circuit result");
+
     std::error_code ec;
     std::filesystem::remove(projectPath, ec);
     std::filesystem::remove(csvPath, ec);

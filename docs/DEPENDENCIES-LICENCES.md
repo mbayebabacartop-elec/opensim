@@ -6,6 +6,8 @@
 |---|---|---|---|
 | C++20 / MSVC 2022 | langage et toolchain Windows | MSVC Build Tools gratuits dans des conditions Microsoft applicables ; vérifier les droits de redistribution du runtime MSVC et les conditions du SDK | Cible native initiale. Absent dans l’environnement audité. |
 | Qt 6 / Qt Quick / QML | UI native | Qt Community sous LGPLv3/GPLv3 selon module, ou commerciale. Modules Community uniquement GPL : notamment Qt Quick 3D et Qt Graphs. | Qt Quick/QML 6.10.3 installé pour le shell ; rester sur les modules LGPL prévus et auditer chaque module avant distribution. |
+| Rendu 3D procédural OpenLab | Maillage moteur et projection pédagogique dessinés dans Qt Quick Canvas | Code du projet ; aucune géométrie propriétaire ni bibliothèque tierce ajoutée. | Implémentation logiciel légère pour cette étape ; profondeur painter, qualité et coût CPU à améliorer et mesurer. |
+| Qt Quick 3D | Renderer spatial Qt étudié, mais non lié | Disponible sous GPLv3 ou licence commerciale selon la documentation officielle Qt ; l'intégration GPL affecterait fortement le modèle propriétaire envisagé. | Exclu tant qu'une revue de licence et de distribution n'autorise pas explicitement ce choix. Evaluer un backend alternatif et interchangeable. |
 | CMake | build et packaging | BSD-3-Clause | Requis ; prendre version stable et minimum maintenable. Projet natif à partir de 3.25 envisagé ; Qt 6.12 source build demande CMake 3.25+ mais Qt binaire ne signifie pas que compiler Qt est nécessaire. |
 | Ninja | générateur rapide | Apache-2.0 | Optionnel ; utile CI/builds, pas obligatoire si générateur VS. |
 | Eigen | algèbre linéaire | MPL-2.0 ; quelques fonctionnalités optionnelles s’appuient sur licences tierces/LGPL | Optionnel, introduire uniquement là où nécessaire ; considérer `EIGEN_MPL2_ONLY` si on veut borner les fonctionnalités sous MPL2/permissives. |
@@ -49,7 +51,7 @@
 | CMake | 4.4.4 | installé depuis le ZIP officiel ; BSD-3-Clause |
 | MSVC Build Tools | 17.14.42 / compilateur 19.44.35229 | installé avec SDK 10.0.26100 ; conditions Microsoft et redistribuable à documenter pour les releases |
 | Qt Quick/QML | 6.10.3 MSVC x64 | utilisé par le shell ; Qt open-source LGPLv3/GPLv3 selon modules et obligations de redistribution à respecter |
-| Qt Quick 3D / Qt Graphs | non installés | non lié au binaire ; installation interrompue faute d’espace disque |
+| Qt Quick 3D / Qt Graphs | non installés | non liés au binaire. Qt Quick 3D a été écarté pour son régime GPLv3/licence commerciale ; le renderer initial est un maillage logiciel dans Qt Quick existant. |
 | nlohmann/json | 3.12.0, en-tête monolithique | MIT ; intégré dans `third_party/nlohmann_json/json.hpp`, SHA-256 `aaf127c04cb31c406e5b04a63f1ae89369fccde6d8fa7cdda1ed4f32dfc5de63` |
 | miniz | 3.1.2, commit `77d0dce8627735138c51770d1799a1ef48f2117d` | licence permissive avec notices upstream ; sous-ensemble de fichiers vendorié sous `third_party/miniz/` et compilé statiquement |
 
@@ -59,6 +61,6 @@ Qt 6.10.3 est une version provisoire de développement ; sa période de support 
 
 ## État final de l’étape 2
 
-Qt Declarative a été installé ; l’interface Qt Quick/QML est intégrée et le build Release a été reconfiguré et relancé avec succès. Qt Quick 3D et Qt Graphs ne sont toujours pas inclus. La version 6.10.3 est un choix de développement provisoire, pas une version à distribuer ; revalider la branche maintenue et les licences exactes des modules au moment du choix final.
+Qt Declarative a été installé ; l’interface Qt Quick/QML est intégrée. Qt Quick 3D et Qt Graphs ne sont pas inclus. L'ADR-0006 documente le choix d'un renderer procédural interne plutôt que d'intégrer Qt Quick 3D GPLv3 sans décision de licence. La version 6.10.3 reste un choix de développement provisoire ; revalider la branche maintenue et les licences exactes des modules avant distribution.
 
 
