@@ -65,6 +65,8 @@ qt_add_executable(openlab_app WIN32
     app/main.cpp
     app/main_window.cpp
     app/main_window.hpp
+    app/lab_controller.cpp
+    app/lab_controller.hpp
     app/logging.cpp
     app/logging.hpp
 )
@@ -75,7 +77,7 @@ qt_add_qml_module(openlab_app
     QML_FILES interface/Main.qml
 )
 target_link_libraries(openlab_app PRIVATE
-    openlab_core
+    openlab_electrical_engine
     Qt6::Core
     Qt6::Gui
     Qt6::Qml
@@ -85,7 +87,7 @@ target_link_libraries(openlab_app PRIVATE
 target_compile_features(openlab_app PRIVATE cxx_std_20)
 
 if(MSVC)
-    target_compile_options(openlab_app PRIVATE /W4 /permissive- /EHsc)
+    target_compile_options(openlab_app PRIVATE /W4 /permissive- /EHsc /utf-8)
 else()
     target_compile_options(openlab_app PRIVATE -Wall -Wextra -Wpedantic)
 endif()
@@ -97,4 +99,19 @@ if(BUILD_TESTING)
     add_executable(openlab_electrical_smoke tests/electrical_smoke.cpp)
     target_link_libraries(openlab_electrical_smoke PRIVATE openlab_electrical_engine)
     add_test(NAME openlab.electrical.rl COMMAND openlab_electrical_smoke)
+    add_executable(openlab_app_controller_smoke
+        tests/app_controller_smoke.cpp
+        app/lab_controller.cpp
+        app/lab_controller.hpp
+    )
+    target_link_libraries(openlab_app_controller_smoke PRIVATE openlab_electrical_engine Qt6::Core)
+    target_include_directories(openlab_app_controller_smoke PRIVATE app)
+    target_compile_features(openlab_app_controller_smoke PRIVATE cxx_std_20)
+    if(MSVC)
+        target_compile_options(openlab_app_controller_smoke PRIVATE /W4 /permissive- /EHsc /utf-8)
+    endif()
+    add_test(NAME openlab.app.controller COMMAND openlab_app_controller_smoke)
+    set_tests_properties(openlab.app.controller PROPERTIES
+        ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${CMAKE_PREFIX_PATH}/bin"
+    )
 endif()

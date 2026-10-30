@@ -27,7 +27,7 @@ Result<void> validate(const SeriesRlStepCase& c) {
 }
 } // namespace
 
-openlab::core::Result<RlResult> simulateSeriesRlStep(const SeriesRlStepCase& c) {
+openlab::core::Result<RlResult> simulateSeriesRlStep(const SeriesRlStepCase& c, const std::atomic_bool* cancellationRequested) {
     using namespace openlab::core;
     auto valid = validate(c);
     if (!valid) return Result<RlResult>::failure(valid.error());
@@ -60,6 +60,8 @@ openlab::core::Result<RlResult> simulateSeriesRlStep(const SeriesRlStepCase& c) 
     result.samples.push_back({0.0, {current, si::electricCurrent}, {r * current, si::voltage}, {initialVL, si::voltage}});
 
     while (time < c.endTimeSeconds) {
+        if (cancellationRequested && cancellationRequested->load(std::memory_order_relaxed))
+            return Result<RlResult>::failure(makeError(ErrorCode::Conflict, "RL simulation cancelled by the user."));
         const double h = std::min(c.maximumStepSeconds, c.endTimeSeconds - time);
         const double denominator = 1.0 + h * r / l;
         const double nextCurrent = (current + h * u / l) / denominator;

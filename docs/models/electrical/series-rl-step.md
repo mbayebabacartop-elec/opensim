@@ -1,17 +1,15 @@
-# Modèle E-001 — Circuit série RL soumis à un échelon
+# Modele E-001 - circuit serie RL soumis a un echelon
 
 - Version : 1.0
-- Domaine : électrique, transitoire continu
-- Classe : composants idéaux, intégration numérique backward Euler
-- État : implémenté dans `openlab_electrical_engine`, validé par référence analytique (cas de test indiqué ci-dessous)
+- Domaine : electrique, transitoire continu
+- Classe : composants ideaux, integration Euler implicite
+- Etat : implemente dans `openlab_electrical_engine`; valide par reference analytique.
 
-## Schéma et convention
+## Schema et convention
 
-Une source idéale `U(t)` alimente en série une résistance totale `R` et une inductance idéale `L`. Le courant `i` est positif de la source vers les composants. Les chutes passives sont positives dans le sens du courant. À `t = 0`, la tension passe instantanément de zéro à la valeur constante `U`; le courant initial `i(0)` est la condition fournie au modèle.
+Une source ideale `U(t)` alimente en serie une resistance totale `R` et une inductance ideale `L`. Le courant `i` est positif de la source vers les composants. Les tensions passives sont positives dans le sens du courant. A `t=0`, la tension passe instantanement de zero a `U`; le courant initial `i(0)` est fourni.
 
-## Équations et unités SI
-
-La loi des mailles et les lois constitutives donnent
+## Equations et unites SI
 
 ```text
 U = R i + L di/dt
@@ -19,9 +17,9 @@ di/dt = (U - R i)/L
 tau = L/R
 ```
 
-`U` en volts (V), `R` en ohms (Ω), `i` en ampères (A), `L` en henrys (H = V·s/A), `t` et `tau` en secondes (s). `R > 0`, `L > 0`; la dimension de `tau` est le temps.
+`U` en volts, `R` en ohms, `i` en amperes, `L` en henrys, `t` et `tau` en secondes. `R>0` et `L>0`.
 
-Pour `U` constant après l'échelon, la solution analytique utilisée comme référence est
+Pour une tension constante apres l'echelon :
 
 ```text
 i(t) = U/R + (i(0) - U/R) exp(-t/tau)
@@ -29,11 +27,11 @@ vR(t) = R i(t)
 vL(t) = U - vR(t)
 ```
 
-Ces équations résultent de la loi des mailles et de la loi de l'inductance linéaire idéale. Référence pédagogique indépendante pour la réponse au pas et `tau = L/R` : [Engineering LibreTexts, Transient Response of RL Circuits](https://eng.libretexts.org/Workbench/Introduction_to_Circuit_Analysis/07%3A_1st_Order_RC_RL_Circuit/7.05%3A_Transient_Response_of_RL_Circuits). Le manuel ngspice décrit l'analyse transitoire et le pas de calcul maximal (`tmax`) : [ngspice manual, section .TRAN](https://ngspice.sourceforge.io/docs/ngspice-43-manual.pdf).
+Reference pedagogique : [Engineering LibreTexts, reponse transitoire des circuits RL](https://eng.libretexts.org/Workbench/Introduction_to_Circuit_Analysis/07%3A_1st_Order_RC_RL_Circuit/7.05%3A_Transient_Response_of_RL_Circuits). Le manuel ngspice decrit l'analyse transitoire et son pas maximal : [manuel ngspice, section .TRAN](https://ngspice.sourceforge.io/docs/ngspice-43-manual.pdf).
 
-## Méthode numérique
+## Methode numerique
 
-Le courant est avancé par Euler implicite (backward Euler), d'ordre un :
+Euler implicite d'ordre un, avec pas `h` :
 
 ```text
 i[n+1] = (i[n] + h U/L) / (1 + h R/L)
@@ -41,12 +39,12 @@ vR[n+1] = R i[n+1]
 vL[n+1] = L (i[n+1] - i[n]) / h
 ```
 
-La sortie contient l'état initial à `t=0` et chaque état calculé jusqu'à la durée demandée ; le dernier pas peut être plus court pour finir exactement à cette durée. `vL` au temps zéro est la valeur instantanée issue de `U - R i(0)`. Une limite de 1 000 000 pas empêche des allocations démesurées. Pour `R,L,h > 0`, le dénominateur est strictement positif et le schéma est stable pour ce système linéaire; la précision reste limitée et doit être étudiée en réduisant le pas.
+Le resultat contient l'etat initial et les etats calcules jusqu'a la duree exacte demandee ; le dernier pas peut etre plus court. A `t=0`, `vL=U-R i(0)`. Le solveur limite la sortie a un million de pas. Pour `R,L,h>0`, le schema est stable sur ce systeme lineaire ; la precision reste a verifier en reduisant le pas.
 
-## Hypothèses et limites
+## Hypotheses et limites
 
-Composants concentrés, linéaires, invariants dans le temps; source et interrupteur idéaux; aucune capacité parasite, résistance série d'inductance distincte, saturation, hystérésis, couplage magnétique, rayonnement ou dépendance thermique. Ce modèle ne permet pas de conclure à la sécurité ou au comportement d'un appareil réel. La valeur `R` doit représenter la résistance série totale modélisée. Aucun paramètre de fabricant n'est intégré.
+Composants concentres, lineaires et invariants dans le temps ; source et commutateur ideaux ; pas de capacites parasites, saturation, hysteresis, couplage magnetique, rayonnement ou dependance thermique. Ce modele ne permet aucune conclusion de securite sur un appareil reel. Aucun parametre constructeur n'est integre.
 
-## Cas de référence et validation
+## Cas de reference
 
-`R = 10 Ω`, `L = 0,1 H`, `U = 5 V`, `i(0)=0 A`, durée `0,05 s`; donc `tau = 0,01 s` et la limite DC `0,5 A`. À `t=0,05 s`, la référence exacte est `0,5 (1 − exp(−5)) A = 0,4966310265 A`. Pour `h=1 ms`, Euler implicite donne `0,4957407244 A` (erreur `0,0008903022 A`); pour `h=0,5 ms`, il donne `0,4961977550 A` (erreur `0,0004332715 A`). Le ratio d'erreurs est environ `2,055`, conforme à la convergence d'ordre un attendue. Les tests vérifient aussi la loi des mailles à chaque échantillon avec une tolérance absolue de `10⁻¹⁰ V`, le temps caractéristique et le rejet d'unités/paramètres invalides. Cette validation analytique n'est ni une comparaison ngspice exécutée, ni une mesure expérimentale.
+`R=10 ohm`, `L=0.1 H`, `U=5 V`, `i(0)=0 A`, duree `0.05 s`. Donc `tau=0.01 s`, limite DC `0.5 A`, et la solution exacte finale vaut `0.5(1-exp(-5)) = 0.4966310265 A`. A `h=1 ms`, erreur mesuree `0.0008903022 A`; a `h=0.5 ms`, erreur `0.0004332715 A`; ratio `2.05484`, compatible avec une convergence d'ordre un. Les tests verifient aussi la loi des mailles a `1e-10 V` et le rejet des parametres invalides. Ce n'est ni une comparaison ngspice executee ni une mesure experimentale.

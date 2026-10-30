@@ -2,6 +2,7 @@
 
 #include "openlab/core/units.hpp"
 
+#include <atomic>
 #include <vector>
 
 namespace openlab::electrical {
@@ -28,6 +29,7 @@ struct RlResult {
 };
 
 // First-order backward-Euler simulation of an ideal series RL circuit under a DC step.
-[[nodiscard]] openlab::core::Result<RlResult> simulateSeriesRlStep(const SeriesRlStepCase& testCase);
+[[nodiscard]] openlab::core::Result<RlResult> simulateSeriesRlStep(
+    const SeriesRlStepCase& testCase, const std::atomic_bool* cancellationRequested = nullptr);
 
 } // namespace openlab::electrical

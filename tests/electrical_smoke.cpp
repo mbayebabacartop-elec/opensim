@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <atomic>
 
 using namespace openlab::core;
 using namespace openlab::electrical;
@@ -37,6 +38,9 @@ int main() {
     auto invalidR = base;
     invalidR.resistance.si_value = 0.0;
     if (simulateSeriesRlStep(invalidR)) return fail("Non-positive resistance was not rejected");
+    std::atomic_bool cancelImmediately{true};
+    const auto cancelled = simulateSeriesRlStep(base, &cancelImmediately);
+    if (cancelled || cancelled.error().code != ErrorCode::Conflict) return fail("Cancellation request was not observed");
     std::cout << "RL tau=" << coarse.value().timeConstantSeconds << " s; coarse error=" << coarseError
               << " A; fine error=" << fineError << " A; error ratio=" << coarseError / fineError << '\n';
     return 0;

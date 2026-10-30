@@ -1,24 +1,23 @@
-# ADR 0005: Core data model and `.olsim` persistence
+# ADR 0005 : modele Core et persistance `.olsim`
 
-- Status: accepted for the Stage 3 foundation
-- Date: 2026-10-30
+- Statut : adopte pour les fondations de l'etape 3
+- Date : 2026-10-30
 
-## Context
+## Contexte
 
-The project model must remain independent of Qt and physical solvers. It needs typed component definitions, SI dimensions, deterministic simulation time/events, and versioned persistence without extracting untrusted archive paths to disk.
+Le modele projet doit rester independant de Qt et des moteurs physiques. Il faut des definitions de composants types, des dimensions SI, un temps/evenements deterministes et un format versionne qui ne decompresse pas de chemins non fiables sur le disque.
 
 ## Decision
 
-- Implement the model as standard C++20 value types and `Result<T>` errors in `openlab::core`.
-- Store SI dimensions as seven signed exponents in base-unit order (m, kg, s, A, K, mol, cd); numeric values are stored in SI.
-- Keep definitions, instances, ports and connections separate from simulation engines.
-- Store `.olsim` as ZIP with `manifest.json` and `project.json`; v1 rejects unknown versions and has no migration registered yet.
-- Use nlohmann/json 3.12.0 (MIT) and miniz 3.1.2 (permissive upstream license), vendored with notices, so builds and runtime need no network.
-- Write a sibling temporary file and replace the destination atomically where supported. Load in memory and validate entry names, count, sizes and checksums; never extract archive paths.
+- Utiliser des types valeur C++20 et `Result<T>` dans `openlab::core`.
+- Encoder les dimensions SI par sept exposants signes dans l'ordre m, kg, s, A, K, mol, cd ; stocker les grandeurs en SI.
+- Separer definitions, instances, ports et connexions des moteurs.
+- Utiliser un conteneur ZIP `.olsim` avec `manifest.json` et `project.json`. La version 1 refuse les versions inconnues ; aucune migration n'est encore enregistree.
+- Utiliser nlohmann/json 3.12.0 et miniz 3.1.2 vendories avec notices pour permettre un build hors ligne.
+- Ecrire dans un fichier temporaire voisin puis remplacer atomiquement quand la plateforme le permet. Lire l'archive en memoire, verifier noms, nombre, tailles et sommes de controle, sans extraire les chemins.
 
 ## Consequences
 
-- Core types can be used by a native UI, CLI, tests and future plugins without Qt.
-- Archive limits and strict entries reduce accidental resource exhaustion and path traversal; this is not a complete hostile-file security audit.
-- V1 is intentionally small. Results, assets, schema migrations, canonical definitions and cryptographic provenance are future work.
-- Recheck vendored notices and toolchain settings when creating a release/SBOM.
+- Le Core pourra etre utilise par une interface, une CLI et des tests sans Qt.
+- Les limites d'archive reduisent les erreurs accidentelles et certains risques de traversal, mais ne remplacent pas un audit securite complet.
+- La v1 ne conserve pas encore resultats, ressources, migrations de schema ni provenance cryptographique.

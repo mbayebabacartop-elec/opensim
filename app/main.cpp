@@ -1,10 +1,12 @@
 ﻿#include "logging.hpp"
+#include "lab_controller.hpp"
 #include "main_window.hpp"
 
 #include "openlab/core/version.hpp"
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
 #include <QLoggingCategory>
 
 int main(int argc, char* argv[]) {
@@ -21,7 +23,9 @@ int main(int argc, char* argv[]) {
     }
 
     qInfo() << "Démarrage d’OpenLab Simulator" << QCoreApplication::applicationVersion();
+    openlab::app::LabController labController;
     QQmlApplicationEngine engine;
+    engine.rootContext()->setContextProperty(QStringLiteral("lab"), &labController);
     QString loadError;
     if (!openlab::app::loadMainWindow(engine, &loadError)) {
         qCritical().noquote() << loadError;
